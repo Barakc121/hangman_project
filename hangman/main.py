@@ -1,21 +1,25 @@
-from  game import *
-from .io import prompt_guess
-from .words import choose_secret_words
+from  hangman.game import *
+from hangman.io import prompt_guess
+from hangman.words import choose_secret_word, words
 
 
 
-def play(words: list[str], max_tries: int = 6) -> None:
+def play(words: list[str]) -> None:
     secret = choose_secret_word(words)
     state = init_state(secret)
-    while not is_won() and not is_lost():
+    while not is_won(state) and not is_lost(state):
+        print(render_display(state))
+        print(state["guessed"] if len(state["guessed"]) else "")
         ch = prompt_guess()
-        while not validate_guess(ch):
+        validate, msg = validate_guess(ch, state["guessed"])
+        while not validate:
+            print(msg)
             ch = prompt_guess()
-        if not apply_guess(state, ch):
-            state["wrong_guesses"] += 1
+            validate, msg = validate_guess(ch, state["guessed"])
+        _ = apply_guess(state, ch)
+    print("congratulation" if is_won(state) else "Mybe Next Time")
+    print(render_summary(state))
         
 
-
-
 if __name__ == "__main__":
-    play()
+    play(words)

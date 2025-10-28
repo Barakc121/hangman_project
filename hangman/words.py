@@ -41,8 +41,6 @@ words=[
 
 
 
-print(choose_secret_word(words))
-
 
 
 
